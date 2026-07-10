@@ -3,6 +3,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
+import { FIXED_API_BASE_URL } from "@/constant/env";
+
 export type ApiCallFormat = "openai" | "gemini";
 
 export type ModelChannel = {
@@ -57,19 +59,16 @@ export type ConfigTabKey = "channels" | "models" | "preferences" | "webdav" | "c
 export const CONFIG_STORE_KEY = "infinite-canvas:ai_config_store";
 export type ModelCapability = "image" | "video" | "text" | "audio";
 const CHANNEL_MODEL_SEPARATOR = "::";
-const OPENAI_BASE_URL = "https://api.openai.com";
-const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
-
 export const defaultConfig: AiConfig = {
     channelMode: "local",
-    baseUrl: OPENAI_BASE_URL,
+    baseUrl: FIXED_API_BASE_URL,
     apiKey: "",
     apiFormat: "openai",
     channels: [
         {
             id: "default",
             name: "默认渠道",
-            baseUrl: OPENAI_BASE_URL,
+            baseUrl: FIXED_API_BASE_URL,
             apiKey: "",
             apiFormat: "openai",
             models: ["gpt-image-2", "grok-imagine-video", "gpt-5.5", "gpt-4o-mini-tts"],
@@ -177,10 +176,10 @@ export const useConfigStore = create<ConfigStore>()(
             shouldPromptContinue: false,
             updateConfig: (key, value) =>
                 set((state) => ({
-                    config: {
+                    config: lockApiBaseUrl({
                         ...state.config,
                         [key]: value,
-                    },
+                    }),
                 })),
             updateWebdavConfig: (key, value) =>
                 set((state) => ({
@@ -211,8 +210,9 @@ export const useConfigStore = create<ConfigStore>()(
                     config: {
                         ...config,
                         channelMode: "local",
+                        baseUrl: FIXED_API_BASE_URL,
                         apiFormat: normalizeApiFormat(config.apiFormat),
-                        channels,
+                        channels: channels.map((channel) => ({ ...channel, baseUrl: FIXED_API_BASE_URL })),
                         models,
                         imageModel: normalizeModelOptionValue(config.imageModel || config.model, channels),
                         videoModel: normalizeModelOptionValue(config.videoModel || "grok-imagine-video", channels),
@@ -247,7 +247,7 @@ function normalizeModelList(models: string[], channels: ModelChannel[]) {
 
 export function useEffectiveConfig() {
     const config = useConfigStore((state) => state.config);
-    return useMemo(() => ({ ...config, channelMode: "local" as const }), [config]);
+    return useMemo(() => ({ ...lockApiBaseUrl(config), channelMode: "local" as const }), [config]);
 }
 
 export function createModelChannel(channel?: Partial<ModelChannel>): ModelChannel {
@@ -255,7 +255,7 @@ export function createModelChannel(channel?: Partial<ModelChannel>): ModelChanne
     return {
         id: channel?.id?.trim() || nanoid(),
         name: channel?.name?.trim() || "新渠道",
-        baseUrl: channel?.baseUrl?.trim() || defaultBaseUrlForApiFormat(apiFormat),
+        baseUrl: FIXED_API_BASE_URL,
         apiKey: channel?.apiKey || "",
         apiFormat,
         models: uniqueRawModels(channel?.models || []),
@@ -315,7 +315,7 @@ export function resolveModelRequestConfig(config: AiConfig, value: string) {
     return {
         ...config,
         model: modelOptionName(value || config.model),
-        baseUrl: channel.baseUrl,
+        baseUrl: FIXED_API_BASE_URL,
         apiKey: channel.apiKey,
         apiFormat: channel.apiFormat,
     };
@@ -353,12 +353,20 @@ function normalizeChannels(config: AiConfig) {
     return channels.map((channel) => ({ ...channel, models: uniqueRawModels(channel.models) }));
 }
 
-export function defaultBaseUrlForApiFormat(apiFormat: ApiCallFormat) {
-    return apiFormat === "gemini" ? GEMINI_BASE_URL : OPENAI_BASE_URL;
+export function defaultBaseUrlForApiFormat(_apiFormat: ApiCallFormat) {
+    return FIXED_API_BASE_URL;
 }
 
 function normalizeApiFormat(apiFormat: unknown): ApiCallFormat {
     return apiFormat === "gemini" ? "gemini" : "openai";
+}
+
+function lockApiBaseUrl(config: AiConfig): AiConfig {
+    return {
+        ...config,
+        baseUrl: FIXED_API_BASE_URL,
+        channels: (config.channels || []).map((channel) => ({ ...channel, baseUrl: FIXED_API_BASE_URL })),
+    };
 }
 
 function uniqueRawModels(models: string[]) {

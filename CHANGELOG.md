@@ -2,6 +2,8 @@
 
 ## Unreleased
 
++ [调整] 将所有模型渠道的 Base URL 固定为 `https://img.tokenshen.top` 且禁止修改。
++ [调整] 首页改为以真实画布界面为主视觉的编辑式落地页，新增动态创作输入框，并重组创作流程与提示词作品展示。
 + [优化] 本地 Agent 连接说明明确区分插件 / 手动 MCP 才会增加 Codex token 消耗，直接运行 Agent 不受影响。
 + [优化] 优化本地 Agent 连接说明，区分 Codex 插件启动和直接运行 Agent 两种方式。
 + [新增] Agent 对话消息改用 streamdown 流式渲染，提升长回复与 Markdown 内容展示效果。

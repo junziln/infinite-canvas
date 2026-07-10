@@ -22,6 +22,7 @@ export function AppTopNav() {
     const togglePanel = useAgentStore((state) => state.togglePanel);
     const panelOpen = useAgentStore((state) => state.panelOpen);
     const hideHeader = /^\/canvas\/[^/]+/.test(pathname);
+    const isHome = pathname === "/";
     const slug = pathname.split("/").filter(Boolean)[0];
     const activeToolSlug = navigationTools.some((tool) => tool.slug === slug) ? (slug as NavigationToolSlug) : undefined;
 
@@ -34,7 +35,12 @@ export function AppTopNav() {
     return (
         <>
             {!hideHeader ? (
-                <header className="sticky top-0 z-20 h-14 shrink-0 border-b border-stone-200 bg-background/90 backdrop-blur-xl dark:border-stone-800">
+                <header
+                    className={cn(
+                        "sticky top-0 z-20 h-14 shrink-0 backdrop-blur-xl",
+                        isHome ? "bg-[#f3f2f0]/95 dark:bg-[#141412]/95" : "border-b border-stone-200 bg-background/90 dark:border-stone-800",
+                    )}
+                >
                     <div className="mx-auto flex h-full max-w-7xl items-stretch justify-between gap-5 px-6">
                         <div className="flex min-w-0 items-center">
                             <Link to="/" className="flex h-full shrink-0 items-center gap-2 text-sm font-semibold leading-none tracking-tight text-stone-950 transition hover:text-stone-600 dark:text-stone-100 dark:hover:text-stone-300">
@@ -73,7 +79,7 @@ export function AppTopNav() {
                                                     : "text-stone-500 after:bg-transparent hover:text-stone-950 dark:text-stone-400 dark:hover:text-stone-100",
                                             )}
                                         >
-                                            <Icon className="size-4" />
+                                            {!isHome ? <Icon className="size-4" /> : null}
                                             <span className="truncate">{tool.label}</span>
                                         </Link>
                                     );
