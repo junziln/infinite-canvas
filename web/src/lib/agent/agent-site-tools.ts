@@ -1,6 +1,5 @@
 import type { NavigateFunction } from "react-router-dom";
 
-import { fetchPrompts } from "@/services/api/prompts";
 import { uploadImage } from "@/services/image-storage";
 import { imageAspectOptions, imageQualityOptions } from "@/components/image-settings-panel";
 import { videoResolutionOptions, videoSecondOptions, videoSizeOptions } from "@/components/video-settings-panel";
@@ -9,7 +8,7 @@ import { useAssetStore } from "@/stores/use-asset-store";
 import { modelOptionLabel, modelOptionName, normalizeModelOptionValue, useConfigStore } from "@/stores/use-config-store";
 import { useWorkbenchAgentStore } from "@/stores/use-workbench-agent-store";
 
-// 在网页端执行 Agent 的「站点级」工具（画布列表、工作台生成、提示词搜索、素材增删查等）。
+// 在网页端执行 Agent 的「站点级」工具（画布列表、工作台生成、素材增删查等）。
 // 这些工具的数据都在浏览器本地（localforage / zustand），因此由本模块直接读写对应 store 后返回结果。
 
 export const SITE_TOOL_NAMES = [
@@ -18,7 +17,6 @@ export const SITE_TOOL_NAMES = [
     "workbench_image_generate",
     "workbench_video_get_config",
     "workbench_video_generate",
-    "prompts_search",
     "assets_list",
     "assets_add",
 ] as const;
@@ -35,7 +33,6 @@ export const SITE_TOOL_LABELS: Record<SiteToolName, string> = {
     workbench_image_generate: "生图工作台生成",
     workbench_video_get_config: "视频配置",
     workbench_video_generate: "视频创作台生成",
-    prompts_search: "搜索提示词",
     assets_list: "素材列表",
     assets_add: "添加素材",
 };
@@ -54,8 +51,6 @@ export async function runSiteTool(name: SiteToolName, input: SiteToolInput, navi
             return getVideoConfig();
         case "workbench_video_generate":
             return runVideoWorkbench(input, navigate);
-        case "prompts_search":
-            return searchPrompts(input);
         case "assets_list":
             return listAssets(input);
         case "assets_add":
@@ -175,21 +170,6 @@ function runVideoWorkbench(input: SiteToolInput, navigate: NavigateFunction) {
     navigate("/video");
     useWorkbenchAgentStore.getState().dispatchVideo({ prompt, run });
     return { ok: true, navigated: "/video", prompt, run, applied, note: run ? "已跳转视频创作台并触发生成，结果请稍后在工作台查看" : "已跳转视频创作台并填入参数，未触发生成" };
-}
-
-async function searchPrompts(input: SiteToolInput) {
-    const page = Math.max(1, Math.floor(Number(input.page)) || 1);
-    const pageSize = Math.max(1, Math.min(50, Math.floor(Number(input.pageSize)) || 20));
-    const tags = Array.isArray(input.tags) ? input.tags.filter((tag): tag is string => typeof tag === "string") : [];
-    const result = await fetchPrompts({ keyword: String(input.keyword || ""), category: String(input.category || "全部"), tag: tags, page, pageSize });
-    return {
-        total: result.total,
-        page,
-        pageSize,
-        categories: result.categories,
-        tags: result.tags.slice(0, 60),
-        items: result.items.map((prompt) => ({ id: prompt.id, title: prompt.title, prompt: prompt.prompt, category: prompt.category, tags: prompt.tags, coverUrl: prompt.coverUrl, githubUrl: prompt.githubUrl })),
-    };
 }
 
 function listAssets(input: SiteToolInput) {

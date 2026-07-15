@@ -1,0 +1,8 @@
+<svg width="440" height="96" viewBox="0 0 440 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">ShenFlow</title>
+  <g transform="translate(8 8)">
+    <path d="M10 54C24 54 22 24 39 24C56 24 53 54 70 54" stroke="#2868FF" stroke-width="8" stroke-linecap="square"/>
+    <rect x="5" y="49" width="10" height="10" fill="#B8F23D"/><rect x="34" y="19" width="10" height="10" fill="#00A9A1"/><rect x="65" y="49" width="10" height="10" fill="#B8F23D"/>
+  </g>
+  <text x="112" y="62" fill="#0B0C0F" font-family="Avenir Next, Manrope, Segoe UI, sans-serif" font-size="44" letter-spacing="0"><tspan font-weight="700">Shen</tspan><tspan font-weight="500">Flow</tspan></text>
+</svg>

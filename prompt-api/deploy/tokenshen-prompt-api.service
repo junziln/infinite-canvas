@@ -1,0 +1,21 @@
+[Unit]
+Description=TokenShen 提示词接口
+After=network.target
+
+[Service]
+Type=simple
+User=nginx
+Group=nginx
+Environment=PROMPT_API_ADDR=127.0.0.1:18083
+Environment=PROMPT_DATA_FILE=/www/tokenshen-prompts/current/private/prompts.json
+ExecStart=/usr/local/bin/tokenshen-prompt-api
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target

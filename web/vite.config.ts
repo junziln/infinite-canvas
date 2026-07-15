@@ -9,10 +9,18 @@ import { parseChangelog } from "./src/lib/release";
 const webDir = dirname(fileURLToPath(import.meta.url));
 const localVersion = readFileSync(resolve(webDir, "../VERSION"), "utf8").trim() || "dev";
 const localChangelog = readFileSync(resolve(webDir, "../CHANGELOG.md"), "utf8");
+const promptApiProxy = process.env.VITE_PROMPT_API_PROXY || "https://canvas.tokenshen.top";
 
 export default defineConfig({
     base: process.env.VITE_BASE || "/",
     plugins: [react()],
+    server: {
+        proxy: {
+            "/prompt-api": { target: promptApiProxy, changeOrigin: true },
+            "/prompt-data": { target: "https://canvas.tokenshen.top", changeOrigin: true },
+            "/prompt-assets": { target: "https://canvas.tokenshen.top", changeOrigin: true },
+        },
+    },
     resolve: {
         alias: {
             "@": resolve(webDir, "src"),

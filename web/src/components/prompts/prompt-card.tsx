@@ -2,7 +2,7 @@ import { Copy } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button, Card, Tag } from "antd";
 
-import { formatPromptDate, type Prompt } from "@/services/api/prompts";
+import { formatPromptDate, type PromptListItem } from "@/services/api/prompts";
 
 export function PromptCard({
     item,
@@ -12,15 +12,19 @@ export function PromptCard({
     actionIcon = <Copy className="size-3.5" />,
     actionType = "text",
     extraAction,
+    loading = false,
 }: {
-    item: Prompt;
-    onOpen: () => void;
-    onCopy: () => void;
+    item: PromptListItem;
+    onOpen: () => void | Promise<void>;
+    onCopy: () => void | Promise<void>;
     actionLabel?: string;
     actionIcon?: ReactNode;
     actionType?: "text" | "primary";
     extraAction?: ReactNode;
+    loading?: boolean;
 }) {
+    const updatedDate = formatPromptDate(item.updatedAt);
+
     return (
         <Card
             hoverable
@@ -36,9 +40,9 @@ export function PromptCard({
                 <div className="p-4">
                     <div className="flex items-start justify-between gap-3">
                         <h2 className="line-clamp-1 text-sm font-semibold text-stone-950 dark:text-stone-100">{item.title}</h2>
-                        <span className="shrink-0 text-xs text-stone-400 dark:text-stone-500">{formatPromptDate(item.updatedAt)}</span>
+                        {updatedDate ? <span className="shrink-0 text-xs text-stone-400 dark:text-stone-500">{updatedDate}</span> : null}
                     </div>
-                    <p className="mt-2 line-clamp-3 text-xs leading-5 text-stone-600 dark:text-stone-400">{item.prompt}</p>
+                    <p className="mt-2 line-clamp-2 text-xs leading-5 text-stone-600 dark:text-stone-400">{item.author ? `作者：${item.author}` : `来源：${item.category}`}</p>
                     <div className="mt-3 flex flex-wrap gap-1.5">
                         {item.tags.map((tag) => (
                             <Tag key={tag} className="m-0 text-[11px]">
@@ -49,7 +53,7 @@ export function PromptCard({
                 </div>
             </button>
             <div className="flex items-center gap-2 px-4 pb-4">
-                <Button block={actionType === "primary"} type={actionType} size="small" icon={actionIcon} onClick={onCopy}>
+                <Button block={actionType === "primary"} type={actionType} size="small" icon={actionIcon} loading={loading} onClick={onCopy}>
                     {actionLabel}
                 </Button>
                 {extraAction}

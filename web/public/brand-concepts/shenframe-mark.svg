@@ -1,0 +1,5 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">ShenFrame 取景生成标志</title>
+  <path d="M31 12H12V31M49 12H68V31M68 49V68H49M31 68H12V49" stroke="#FF5B52" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M40 24C41.4 32.6 47.4 38.6 56 40C47.4 41.4 41.4 47.4 40 56C38.6 47.4 32.6 41.4 24 40C32.6 38.6 38.6 32.6 40 24Z" fill="#111318"/>
+</svg>

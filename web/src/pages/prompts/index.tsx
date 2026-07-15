@@ -8,14 +8,15 @@ import { PromptDetailDialog } from "./components/prompt-detail-dialog";
 import { useCopyText } from "@/hooks/use-copy-text";
 import { cn } from "@/lib/utils";
 import { useAssetStore } from "@/stores/use-asset-store";
-import { ALL_PROMPTS_OPTION, type Prompt } from "@/services/api/prompts";
+import { ALL_PROMPTS_OPTION, fetchPrompt, type Prompt, type PromptListItem } from "@/services/api/prompts";
 
 export default function PromptsPage() {
     const { message } = App.useApp();
     const [titleKeyword, setTitleKeyword] = useState("");
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState(ALL_PROMPTS_OPTION);
-    const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+    const [selectedPrompt, setSelectedPrompt] = useState<Prompt | PromptListItem | null>(null);
+    const [loadingPromptId, setLoadingPromptId] = useState<string | null>(null);
     const addAsset = useAssetStore((state) => state.addAsset);
     const copyText = useCopyText();
     const { query, items: promptItems, tags: promptTags, categories: promptCategoryOptions, total: totalPrompts } = usePromptList({ keyword: titleKeyword, tags: selectedTags, category: selectedCategory });
@@ -34,6 +35,43 @@ export default function PromptsPage() {
     const savePromptAsset = (item: Prompt) => {
         addAsset({ kind: "text", title: item.title, coverUrl: item.coverUrl, tags: item.tags, source: item.category, data: { content: item.prompt }, metadata: { source: "prompt-library", promptId: item.id, githubUrl: item.githubUrl } });
         message.success("已加入我的素材");
+    };
+
+    const openPrompt = async (item: PromptListItem) => {
+        setSelectedPrompt(item);
+        setLoadingPromptId(item.id);
+        try {
+            const detail = await fetchPrompt(item.id);
+            setSelectedPrompt((current) => (current?.id === item.id ? detail : current));
+        } catch (error) {
+            setSelectedPrompt((current) => (current?.id === item.id ? null : current));
+            message.error(error instanceof Error ? error.message : "获取提示词失败");
+        } finally {
+            setLoadingPromptId((current) => (current === item.id ? null : current));
+        }
+    };
+
+    const copyPrompt = async (item: PromptListItem) => {
+        setLoadingPromptId(item.id);
+        try {
+            const detail = await fetchPrompt(item.id);
+            copyText(detail.prompt, "提示词已复制");
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : "获取提示词失败");
+        } finally {
+            setLoadingPromptId((current) => (current === item.id ? null : current));
+        }
+    };
+
+    const savePromptFromCard = async (item: PromptListItem) => {
+        setLoadingPromptId(item.id);
+        try {
+            savePromptAsset(await fetchPrompt(item.id));
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : "获取提示词失败");
+        } finally {
+            setLoadingPromptId((current) => (current === item.id ? null : current));
+        }
     };
 
     const handleListScroll = (event: UIEvent<HTMLDivElement>) => {
@@ -102,10 +140,11 @@ export default function PromptsPage() {
                                 <PromptCard
                                     key={item.id}
                                     item={item}
-                                    onOpen={() => setSelectedPrompt(item)}
-                                    onCopy={() => copyText(item.prompt, "提示词已复制")}
+                                    loading={loadingPromptId === item.id}
+                                    onOpen={() => openPrompt(item)}
+                                    onCopy={() => copyPrompt(item)}
                                     extraAction={
-                                        <Button size="small" icon={<FolderPlus className="size-3.5" />} onClick={() => savePromptAsset(item)}>
+                                        <Button size="small" icon={<FolderPlus className="size-3.5" />} loading={loadingPromptId === item.id} onClick={() => savePromptFromCard(item)}>
                                             加入我的素材
                                         </Button>
                                     }
@@ -120,7 +159,7 @@ export default function PromptsPage() {
                 ) : null}
             </main>
 
-            <PromptDetailDialog prompt={selectedPrompt} onClose={() => setSelectedPrompt(null)} onCopy={(prompt) => copyText(prompt, "提示词已复制")} onSaveAsset={savePromptAsset} />
+            <PromptDetailDialog prompt={selectedPrompt} loading={Boolean(selectedPrompt && loadingPromptId === selectedPrompt.id && !("prompt" in selectedPrompt))} onClose={() => setSelectedPrompt(null)} onCopy={(prompt) => copyText(prompt, "提示词已复制")} onSaveAsset={savePromptAsset} />
         </div>
     );
 }

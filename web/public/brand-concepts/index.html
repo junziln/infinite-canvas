@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0c0f" />
+    <title>TokenShen Creative 品牌系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #0b0c0f;
+        --paper: #f4f6f8;
+        --white: #ffffff;
+        --muted: #717681;
+        --flow: #2868ff;
+        --frame: #ff5b52;
+        --motion: #27c7a1;
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        overflow-x: hidden;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Noto Sans SC", sans-serif;
+        letter-spacing: 0;
+      }
+      a { color: inherit; text-decoration: none; }
+      img { display: block; max-width: 100%; }
+      button, a { -webkit-tap-highlight-color: transparent; }
+
+      .shell { width: min(1240px, calc(100% - 56px)); margin: 0 auto; }
+      .topbar {
+        position: absolute;
+        inset: 0 0 auto;
+        z-index: 5;
+        height: 76px;
+        color: rgba(255, 255, 255, .72);
+      }
+      .topbar-inner { display: flex; height: 100%; align-items: center; justify-content: space-between; }
+      .parent-brand { display: inline-flex; align-items: center; gap: 11px; color: #fff; font: 700 17px/1 "Manrope", sans-serif; }
+      .parent-brand img { width: 28px; height: 28px; }
+      .revision { font: 600 11px/1 "Manrope", sans-serif; text-transform: uppercase; }
+
+      .hero {
+        position: relative;
+        display: flex;
+        min-height: 720px;
+        align-items: flex-end;
+        overflow: hidden;
+        background: var(--ink);
+        color: #fff;
+      }
+      .hero::after {
+        content: "TS";
+        position: absolute;
+        right: -18px;
+        bottom: -156px;
+        color: rgba(255, 255, 255, .035);
+        font: 800 500px/.78 "Manrope", sans-serif;
+        pointer-events: none;
+      }
+      .hero-inner { position: relative; z-index: 1; padding: 150px 0 92px; }
+      .eyebrow { display: flex; align-items: center; gap: 10px; color: rgba(255, 255, 255, .54); font: 600 12px/1 "Manrope", sans-serif; }
+      .eyebrow::before { width: 28px; height: 1px; background: currentColor; content: ""; }
+      h1 {
+        max-width: 920px;
+        margin: 30px 0 0;
+        font: 700 clamp(54px, 7.6vw, 108px)/1.02 "Manrope", "Noto Sans SC", sans-serif;
+      }
+      .hero-bottom { display: flex; width: 100%; min-width: 0; margin-top: 72px; align-items: flex-end; justify-content: space-between; gap: 32px; }
+      .hero-copy { width: 100%; min-width: 0; max-width: 540px; margin: 0; overflow-wrap: anywhere; color: rgba(255, 255, 255, .62); font-size: 16px; line-height: 1.9; }
+      .hero-mark { width: 118px; height: 118px; animation: mark-in 900ms cubic-bezier(.2,.75,.2,1) both; }
+
+      .family-nav { background: #fff; }
+      .family-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+      .family-link { position: relative; display: flex; min-height: 124px; align-items: center; gap: 18px; padding: 28px 0; }
+      .family-link + .family-link { padding-left: 34px; }
+      .family-link + .family-link::before { position: absolute; inset: 32px auto 32px 0; width: 1px; background: #e4e7eb; content: ""; }
+      .family-link img { width: 48px; height: 48px; transition: transform 260ms ease; }
+      .family-link:hover img { transform: translateY(-3px) scale(1.04); }
+      .family-link strong { display: block; font: 700 17px/1.2 "Manrope", sans-serif; }
+      .family-link span { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; }
+
+      .section { padding: 132px 0; }
+      .section-head { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 48px; }
+      .section-index { color: var(--muted); font: 600 12px/1 "Manrope", sans-serif; }
+      .section-title { max-width: 780px; margin: 0; font: 700 clamp(36px, 5vw, 68px)/1.13 "Manrope", "Noto Sans SC", sans-serif; }
+      .section-note { max-width: 640px; margin: 28px 0 0; color: var(--muted); font-size: 15px; line-height: 1.9; }
+
+      .dna { background: var(--paper); }
+      .dna-stage { display: grid; grid-template-columns: 1.2fr .8fr; margin-top: 86px; overflow: hidden; background: #fff; }
+      .dna-visual { display: grid; min-height: 430px; place-items: center; background: #0d0f13; }
+      .dna-visual img { width: 176px; height: 176px; }
+      .dna-copy { display: flex; flex-direction: column; justify-content: center; padding: 64px; }
+      .dna-copy h3 { margin: 0; font: 700 28px/1.2 "Manrope", sans-serif; }
+      .dna-copy p { margin: 20px 0 0; color: var(--muted); font-size: 14px; line-height: 1.9; }
+      .dna-list { display: grid; margin: 38px 0 0; gap: 18px; }
+      .dna-item { display: grid; grid-template-columns: 34px 1fr; align-items: center; color: #3f434b; font-size: 13px; }
+      .dna-item b { color: var(--ink); font: 700 12px/1 "Manrope", sans-serif; }
+
+      .products { padding-bottom: 0; background: #fff; }
+      .product-list { margin-top: 90px; }
+      .product {
+        display: grid;
+        min-height: 520px;
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+      }
+      .product:nth-child(2) { background: #0d0f13; color: #fff; }
+      .product:nth-child(2) .product-copy { order: 2; }
+      .product:nth-child(2) .product-stage { order: 1; background: #15171c; }
+      .product-copy { display: flex; flex-direction: column; justify-content: center; padding: 76px max(56px, calc((100vw - 1240px) / 2)); padding-right: 64px; }
+      .product:nth-child(2) .product-copy { padding-right: max(56px, calc((100vw - 1240px) / 2)); padding-left: 64px; }
+      .product-kind { color: var(--muted); font-size: 12px; font-weight: 600; }
+      .product h3 { margin: 16px 0 0; font: 700 clamp(44px, 5vw, 72px)/1 "Manrope", sans-serif; }
+      .product p { max-width: 500px; margin: 26px 0 0; color: var(--muted); font-size: 14px; line-height: 1.9; }
+      .product-tags { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 36px; }
+      .product-tags span { padding: 7px 10px; border: 1px solid #dde1e6; border-radius: 4px; color: var(--muted); font-size: 11px; }
+      .product:nth-child(2) .product-tags span { border-color: #30333a; }
+      .product-stage { position: relative; display: grid; min-height: 520px; place-items: center; overflow: hidden; background: #f0f3f6; }
+      .product-stage::before { position: absolute; width: 230px; height: 230px; border: 1px solid rgba(11, 12, 15, .08); transform: rotate(45deg); content: ""; }
+      .product:nth-child(2) .product-stage::before { border-color: rgba(255, 255, 255, .08); }
+      .product-mark { position: relative; z-index: 1; width: 168px; height: 168px; transition: transform 400ms cubic-bezier(.2,.8,.2,1); }
+      .product-stage:hover .product-mark { transform: translateY(-5px) scale(1.06); }
+      .product-number { position: absolute; right: 32px; bottom: 24px; color: rgba(11, 12, 15, .18); font: 700 12px/1 "Manrope", sans-serif; }
+      .product:nth-child(2) .product-number { color: rgba(255, 255, 255, .22); }
+
+      .lockups { background: var(--paper); }
+      .lockup-board { display: grid; grid-template-columns: 1fr 1fr; margin-top: 82px; gap: 16px; }
+      .lockup-tile { display: flex; min-height: 270px; align-items: center; justify-content: center; padding: 48px; background: #fff; }
+      .lockup-tile.dark { background: #0d0f13; color: #fff; }
+      .lockup-tile.wide { grid-column: 1 / -1; }
+      .lockup-tile img { width: min(420px, 100%); }
+      .dark-lockup { display: flex; align-items: center; gap: 24px; }
+      .dark-lockup img { width: 74px; height: 74px; }
+      .dark-lockup strong { color: #fff; font: 700 clamp(28px, 4vw, 46px)/1 "Manrope", sans-serif; }
+      .dark-lockup strong span { font-weight: 500; }
+
+      .usage { background: #fff; }
+      .usage-grid { display: grid; grid-template-columns: 1.35fr .65fr; margin-top: 80px; gap: 18px; }
+      .browser-demo { overflow: hidden; border: 1px solid #e1e4e8; background: #f8f9fa; box-shadow: 0 30px 80px rgba(13, 15, 19, .09); }
+      .browser-bar { display: flex; height: 48px; align-items: center; gap: 7px; padding: 0 18px; background: #fff; }
+      .browser-dot { width: 7px; height: 7px; border-radius: 50%; background: #d9dde2; }
+      .app-nav { display: flex; height: 72px; align-items: center; justify-content: space-between; padding: 0 28px; background: #fff; }
+      .app-brand { display: flex; align-items: center; gap: 12px; font: 700 17px/1 "Manrope", sans-serif; }
+      .app-brand img { width: 34px; height: 34px; }
+      .app-links { display: flex; gap: 26px; color: #737883; font-size: 12px; }
+      .app-canvas { position: relative; min-height: 340px; overflow: hidden; background-color: #eef1f4; background-image: radial-gradient(#cbd1d8 1px, transparent 1px); background-size: 18px 18px; }
+      .node { position: absolute; display: flex; align-items: center; gap: 10px; width: 176px; height: 72px; padding: 13px; border: 1px solid #dfe3e8; border-radius: 6px; background: #fff; box-shadow: 0 14px 28px rgba(13, 15, 19, .08); }
+      .node.one { top: 64px; left: 12%; }
+      .node.two { top: 172px; left: 42%; }
+      .node.three { top: 72px; right: 8%; }
+      .node i { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 4px; background: #edf4ff; color: var(--flow); font: 700 12px/1 "Manrope", sans-serif; }
+      .node b { display: block; font-size: 11px; }
+      .node small { display: block; margin-top: 5px; color: #9a9fa7; font-size: 9px; }
+      .app-icons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .app-icon { display: grid; min-height: 194px; place-items: center; background: #0d0f13; }
+      .app-icon:nth-child(2) { background: #edf0f3; }
+      .app-icon:nth-child(3) { background: #fff; border: 1px solid #e2e5e9; }
+      .app-icon:nth-child(4) { background: #e9edf1; }
+      .app-icon img { width: 78px; height: 78px; }
+
+      .palette { background: #0d0f13; color: #fff; }
+      .palette .section-index, .palette .section-note { color: rgba(255, 255, 255, .5); }
+      .swatches { display: grid; grid-template-columns: repeat(6, 1fr); margin-top: 80px; }
+      .swatch { display: flex; min-height: 180px; flex-direction: column; justify-content: space-between; padding: 20px; }
+      .swatch span { font: 700 11px/1 "Manrope", sans-serif; }
+      .swatch small { font: 500 10px/1 "Manrope", sans-serif; opacity: .66; }
+
+      .footer { background: #fff; }
+      .footer-inner { display: flex; min-height: 200px; align-items: center; justify-content: space-between; gap: 30px; }
+      .footer-brand { display: flex; align-items: center; gap: 14px; font: 700 22px/1 "Manrope", sans-serif; }
+      .footer-brand img { width: 40px; height: 40px; }
+      .downloads { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+      .download { padding: 10px 13px; border: 1px solid #dfe3e7; border-radius: 4px; color: #555a63; font: 600 11px/1 "Manrope", sans-serif; transition: border-color 180ms ease, color 180ms ease; }
+      .download:hover { border-color: #8b919b; color: var(--ink); }
+
+      @keyframes mark-in { from { opacity: 0; transform: translateY(22px) scale(.88); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+      @media (max-width: 900px) {
+        .hero { min-height: 660px; }
+        .section-head { grid-template-columns: 1fr; gap: 24px; }
+        .dna-stage, .product, .usage-grid { grid-template-columns: 1fr; }
+        .product:nth-child(2) .product-copy { order: 1; }
+        .product:nth-child(2) .product-stage { order: 2; }
+        .product-copy, .product:nth-child(2) .product-copy { padding: 72px 42px; }
+        .family-link + .family-link { padding-left: 22px; }
+        .swatches { grid-template-columns: repeat(3, 1fr); }
+      }
+
+      @media (max-width: 640px) {
+        .shell { width: min(100% - 36px, 1240px); }
+        .topbar { height: 64px; }
+        .revision { display: none; }
+        .hero { min-height: 620px; }
+        .hero-inner { padding: 120px 0 58px; }
+        h1 { font-size: 42px; }
+        .hero-bottom { margin-top: 48px; align-items: flex-start; flex-direction: column-reverse; }
+        .hero-copy { width: calc(100vw - 36px); max-width: calc(100vw - 36px); word-break: break-word; }
+        .hero-mark { width: 76px; height: 76px; }
+        .hero::after { right: -20px; bottom: -60px; font-size: 240px; }
+        .family-grid { grid-template-columns: 1fr; }
+        .family-link { min-height: 92px; }
+        .family-link + .family-link { padding-left: 0; }
+        .family-link + .family-link::before { inset: 0 0 auto; width: auto; height: 1px; }
+        .section { padding: 88px 0; }
+        .dna-stage { margin-top: 54px; }
+        .dna-visual { min-height: 300px; }
+        .dna-visual img { width: 132px; height: 132px; }
+        .dna-copy { padding: 38px 28px; }
+        .product-list { margin-top: 54px; }
+        .product { min-height: 0; grid-template-columns: 1fr; }
+        .product-copy, .product:nth-child(2) .product-copy { padding: 58px 24px; }
+        .product-stage { min-height: 340px; }
+        .product-stage::before { width: 190px; height: 190px; }
+        .product-mark { width: 126px; height: 126px; }
+        .lockup-board { grid-template-columns: 1fr; margin-top: 54px; }
+        .lockup-tile, .lockup-tile.wide { grid-column: auto; min-height: 210px; padding: 28px; }
+        .usage-grid { margin-top: 54px; }
+        .app-links { display: none; }
+        .app-canvas { min-height: 300px; }
+        .node { width: 146px; }
+        .node.one { left: 6%; }
+        .node.two { left: 38%; }
+        .node.three { display: none; }
+        .app-icon { min-height: 140px; }
+        .swatches { grid-template-columns: repeat(2, 1fr); margin-top: 54px; }
+        .swatch { min-height: 140px; }
+        .footer-inner { align-items: flex-start; flex-direction: column; padding: 48px 0; }
+        .downloads { justify-content: flex-start; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="parent-brand" href="#top"><img src="./tokenshen-mark.svg" alt="" />TokenShen</a>
+        <span class="revision">CREATIVE SYSTEM / 02</span>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="shell hero-inner">
+          <div class="eyebrow">TOKENSHEN CREATIVE</div>
+          <h1>让三个创作产品，<br />长成一个品牌。</h1>
+          <div class="hero-bottom">
+            <p class="hero-copy">以 TokenShen 首字母 T、令牌切角和接口分流为核心，建立完全原创的母品牌字标；画布、图像和视频则使用各自独立的能力符号。</p>
+            <img class="hero-mark" src="./tokenshen-mark.svg" alt="TokenShen 标志" />
+          </div>
+        </div>
+      </section>
+
+      <nav class="family-nav" aria-label="产品标志导航">
+        <div class="shell family-grid">
+          <a class="family-link" href="#flow"><img src="./shenflow-mark.svg" alt="" /><span><strong>ShenFlow</strong><span>无限画布</span></span></a>
+          <a class="family-link" href="#frame"><img src="./shenframe-mark.svg" alt="" /><span><strong>ShenFrame</strong><span>图像生成</span></span></a>
+          <a class="family-link" href="#motion"><img src="./shenmotion-mark.svg" alt="" /><span><strong>ShenMotion</strong><span>视频生成</span></span></a>
+        </div>
+      </nav>
+
+      <section class="section dna">
+        <div class="shell">
+          <div class="section-head">
+            <span class="section-index">01 / 品牌基因</span>
+            <div>
+              <h2 class="section-title">先建立自己的字形，<br />再扩展产品家族。</h2>
+              <p class="section-note">母标志以切角 T 作为 TokenShen 的直接识别，不借用任何现成系统图形。子产品通过统一线宽、切角和双色规则形成家族感，无需套进同一个容器。</p>
+            </div>
+          </div>
+          <div class="dna-stage">
+            <div class="dna-visual"><img src="./tokenshen-mark.svg" alt="TokenShen 母品牌图形" /></div>
+            <div class="dna-copy">
+              <h3>TokenShen DNA</h3>
+              <p>主体是一枚被切开的 T 形令牌：蓝色部分代表稳定的接口底座，荧光绿色切片代表模型能力从网关分流到不同产品。</p>
+              <div class="dna-list">
+                <div class="dna-item"><b>01</b><span>切角字母 T，直接对应 TokenShen</span></div>
+                <div class="dna-item"><b>02</b><span>分离色块，表达接口与能力分流</span></div>
+                <div class="dna-item"><b>03</b><span>平面专色，保证小尺寸识别与印刷</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section products">
+        <div class="shell section-head">
+          <span class="section-index">02 / 产品家族</span>
+          <div>
+            <h2 class="section-title">同一套规则，<br />三种清晰能力。</h2>
+            <p class="section-note">命名全部保留 Shen 前缀。后缀只描述用户真正感知到的创作方式，简短、可读，也方便未来继续扩展音频或三维产品。</p>
+          </div>
+        </div>
+
+        <div class="product-list">
+          <article class="product" id="flow">
+            <div class="product-copy">
+              <span class="product-kind">无限画布 / CANVAS</span>
+              <h3>ShenFlow</h3>
+              <p>三个方形节点由一条连续曲线串联，直接表达想法、素材和生成结果在无限空间中的编排与流动。</p>
+              <div class="product-tags"><span>节点编排</span><span>无限空间</span><span>创作工作流</span></div>
+            </div>
+            <div class="product-stage"><img class="product-mark" src="./shenflow-mark.svg" alt="ShenFlow 图形标志" /><span class="product-number">01</span></div>
+          </article>
+
+          <article class="product" id="frame">
+            <div class="product-copy">
+              <span class="product-kind">图像生成 / IMAGE</span>
+              <h3>ShenFrame</h3>
+              <p>取代偏底层技术感的 ShenPixel。四角取景框与生成闪光组合，覆盖生图、修图、扩图和参考图编辑等完整图像能力。</p>
+              <div class="product-tags"><span>图像生成</span><span>视觉编辑</span><span>参考图创作</span></div>
+            </div>
+            <div class="product-stage"><img class="product-mark" src="./shenframe-mark-dark.svg" alt="ShenFrame 深色图形标志" /><span class="product-number">02</span></div>
+          </article>
+
+          <article class="product" id="motion">
+            <div class="product-copy">
+              <span class="product-kind">视频生成 / VIDEO</span>
+              <h3>ShenMotion</h3>
+              <p>两张向前推进的播放片构成动态符号，直接传达时间、方向和连续画面，在导航栏尺寸下依然清楚。</p>
+              <div class="product-tags"><span>视频生成</span><span>动态叙事</span><span>时间延展</span></div>
+            </div>
+            <div class="product-stage"><img class="product-mark" src="./shenmotion-mark.svg" alt="ShenMotion 图形标志" /><span class="product-number">03</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section lockups">
+        <div class="shell">
+          <div class="section-head">
+            <span class="section-index">03 / 标准组合</span>
+            <div>
+              <h2 class="section-title">从网站页头到产品图标，<br />保持同一种气质。</h2>
+              <p class="section-note">横版组合用于网页、登录页与对外物料；独立图形用于头像、收藏夹图标和移动端入口。</p>
+            </div>
+          </div>
+          <div class="lockup-board">
+            <div class="lockup-tile wide"><img src="./shenflow.svg" alt="ShenFlow 横版标志" /></div>
+            <div class="lockup-tile"><img src="./shenframe.svg" alt="ShenFrame 横版标志" /></div>
+            <div class="lockup-tile dark"><div class="dark-lockup"><img src="./shenmotion-mark-dark.svg" alt="" /><strong>Shen<span>Motion</span></strong></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section usage">
+        <div class="shell">
+          <div class="section-head">
+            <span class="section-index">04 / 实际落位</span>
+            <div>
+              <h2 class="section-title">标志不是挂在墙上的图，<br />它必须在产品里成立。</h2>
+              <p class="section-note">以下按真实导航栏、画布节点和应用入口尺寸展示，重点检查小尺寸识别、明暗背景适配以及产品之间的区分度。</p>
+            </div>
+          </div>
+          <div class="usage-grid">
+            <div class="browser-demo">
+              <div class="browser-bar"><i class="browser-dot"></i><i class="browser-dot"></i><i class="browser-dot"></i></div>
+              <div class="app-nav">
+                <div class="app-brand"><img src="./shenflow-mark.svg" alt="" />ShenFlow</div>
+                <div class="app-links"><span>画布</span><span>图片</span><span>视频</span><span>素材</span></div>
+              </div>
+              <div class="app-canvas">
+                <div class="node one"><i>01</i><span><b>创作想法</b><small>从一个问题开始</small></span></div>
+                <div class="node two"><i>02</i><span><b>图像生成</b><small>生成视觉方案</small></span></div>
+                <div class="node three"><i>03</i><span><b>视频延展</b><small>让画面动起来</small></span></div>
+              </div>
+            </div>
+            <div class="app-icons">
+              <div class="app-icon"><img src="./tokenshen-mark.svg" alt="TokenShen 应用图标" /></div>
+              <div class="app-icon"><img src="./shenflow-mark.svg" alt="ShenFlow 应用图标" /></div>
+              <div class="app-icon"><img src="./shenframe-mark.svg" alt="ShenFrame 应用图标" /></div>
+              <div class="app-icon"><img src="./shenmotion-mark.svg" alt="ShenMotion 应用图标" /></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section palette">
+        <div class="shell">
+          <div class="section-head">
+            <span class="section-index">05 / 色彩</span>
+            <div>
+              <h2 class="section-title">颜色负责区分，<br />结构负责被记住。</h2>
+              <p class="section-note">大面积界面仍以黑、白和中性灰为主。标志使用平面专色，不依赖渐变效果；每个产品拥有独立强调色，同时共享高对比的视觉规则。</p>
+            </div>
+          </div>
+          <div class="swatches">
+            <div class="swatch" style="background:#2868ff"><span>COBALT</span><small>#2868FF</small></div>
+            <div class="swatch" style="background:#b8f23d;color:#11150a"><span>SIGNAL</span><small>#B8F23D</small></div>
+            <div class="swatch" style="background:#00a9a1"><span>FLOW</span><small>#00A9A1</small></div>
+            <div class="swatch" style="background:#ff5b52"><span>FRAME</span><small>#FF5B52</small></div>
+            <div class="swatch" style="background:#27c7a1;color:#07130f"><span>MOTION</span><small>#27C7A1</small></div>
+            <div class="swatch" style="background:#f4f6f8;color:#0b0c0f"><span>PAPER</span><small>#F4F6F8</small></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-inner">
+        <div class="footer-brand"><img src="./tokenshen-mark.svg" alt="" />TokenShen Creative</div>
+        <div class="downloads">
+          <a class="download" href="./shenflow.svg" download>ShenFlow SVG</a>
+          <a class="download" href="./shenframe.svg" download>ShenFrame SVG</a>
+          <a class="download" href="./shenmotion.svg" download>ShenMotion SVG</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

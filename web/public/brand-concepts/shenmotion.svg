@@ -1,0 +1,9 @@
+<svg width="490" height="96" viewBox="0 0 490 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title id="title">ShenMotion</title>
+  <g transform="translate(8 8)">
+    <path d="M9 17L43 40L9 63V17Z" fill="#2868FF"/>
+    <path d="M36 17L71 40L36 63V17Z" fill="#27C7A1"/>
+    <path d="M36 27L56 40L36 53V27Z" fill="#111318"/>
+  </g>
+  <text x="112" y="62" fill="#0B0C0F" font-family="Avenir Next, Manrope, Segoe UI, sans-serif" font-size="44" letter-spacing="0"><tspan font-weight="700">Shen</tspan><tspan font-weight="500">Motion</tspan></text>
+</svg>
